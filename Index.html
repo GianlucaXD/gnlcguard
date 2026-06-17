@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNLC Guard – Fechamento de Caixa</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --gold:#D4A017; --gold-light:#F0C040; --gold-dark:#A07810;
+  --silver:#A8A8B8; --silver-light:#D0D0E0;
+  --black:#0A0A0A; --dark:#111118; --card:#161622; --card2:#1E1E2E;
+  --border:rgba(212,160,23,0.25); --glow:0 0 20px rgba(212,160,23,0.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:#e0e0f0;font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ── CANVAS LAYERS ── */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0}
+#lightning-canvas{position:fixed;inset:0;pointer-events:none;z-index:1}
+
+/* ── ORBS ── */
+.orb{position:fixed;border-radius:50%;pointer-events:none;animation:float-orb linear infinite;z-index:0}
+@keyframes float-orb{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:.5}50%{transform:translateY(-50px) rotate(180deg) scale(1.15);opacity:.9}100%{transform:translateY(0) rotate(360deg) scale(1);opacity:.5}}
+
+/* ── HEADER ── */
+header{position:relative;z-index:10;text-align:center;padding:36px 20px 24px;background:linear-gradient(180deg,rgba(212,160,23,0.12) 0%,transparent 100%);border-bottom:1px solid var(--border);overflow:hidden}
+header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:200%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),var(--gold-light),transparent);animation:scan-line 3s linear infinite}
+@keyframes scan-line{0%{left:-50%}100%{left:150%}}
+
+.logo-wrap{display:flex;align-items:center;justify-content:center;gap:18px;animation:fadeDown .8s cubic-bezier(.34,1.56,.64,1)}
+.logo-img{width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(212,160,23,.8));animation:pulse-logo 2.5s ease-in-out infinite,spin-slow 20s linear infinite}
+@keyframes pulse-logo{0%,100%{filter:drop-shadow(0 0 16px rgba(212,160,23,.7))}50%{filter:drop-shadow(0 0 40px rgba(240,192,64,1)) drop-shadow(0 0 80px rgba(212,160,23,.4))}}
+@keyframes spin-slow{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
+
+.brand-text h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,5vw,2.4rem);font-weight:900;background:linear-gradient(135deg,var(--gold-light),var(--silver-light),var(--gold),var(--gold-light));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:3px;animation:gradient-shift 3s ease infinite,glitch 8s ease-in-out infinite}
+@keyframes gradient-shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes glitch{0%,92%,100%{transform:none;filter:none}93%{transform:translateX(-3px);filter:hue-rotate(90deg)}94%{transform:translateX(3px);filter:hue-rotate(-90deg)}95%{transform:none;filter:none}96%{transform:translateX(2px) skewX(3deg)}97%{transform:none;filter:none}}
+
+.brand-text p{font-family:'Rajdhani',sans-serif;font-size:.85rem;letter-spacing:6px;color:var(--silver);margin-top:2px;animation:flicker 4s linear infinite}
+@keyframes flicker{0%,95%,100%{opacity:1}96%{opacity:.3}97%{opacity:1}98%{opacity:.5}99%{opacity:1}}
+
+.subtitle{margin-top:10px;font-size:.75rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold-dark);animation:fadeUp .8s ease .3s both}
+
+/* matrix rain behind header */
+#matrix-canvas{position:absolute;inset:0;opacity:.06;pointer-events:none}
+
+/* ── MAIN ── */
+main{position:relative;z-index:5;max-width:700px;margin:0 auto;padding:28px 16px 60px;display:flex;flex-direction:column;gap:20px}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 20px;position:relative;overflow:hidden;animation:slideUp .6s cubic-bezier(.34,1.2,.64,1) both;transition:box-shadow .3s,border-color .3s,transform .3s}
+.card:hover{box-shadow:0 0 30px rgba(212,160,23,.35),0 8px 40px rgba(0,0,0,.6);border-color:rgba(212,160,23,.6);transform:translateY(-2px)}
+/* top shimmer */
+.card::before{content:'';position:absolute;top:0;left:-100%;right:-100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),var(--gold-light),transparent);animation:shimmer-line 2.5s linear infinite}
+@keyframes shimmer-line{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}
+/* corner spark */}.card::after{content:'';position:absolute;top:0;left:0;width:40px;height:40px;background:radial-gradient(circle at 0 0,rgba(212,160,23,.35),transparent 70%);animation:corner-pulse 3s ease-in-out infinite}
+@keyframes corner-pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+
+.card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.12s}.card:nth-child(3){animation-delay:.19s}.card:nth-child(4){animation-delay:.26s}.card:nth-child(5){animation-delay:.33s}.card:nth-child(6){animation-delay:.40s}
+
+.card-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);display:flex;align-items:center;gap:8px;margin-bottom:18px;animation:title-glow 3s ease-in-out infinite}
+@keyframes title-glow{0%,100%{text-shadow:none}50%{text-shadow:0 0 12px rgba(240,192,64,.6)}}
+
+/* ── INPUTS ── */
+.meta-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--silver);font-weight:500}
+input[type=text],input[type=number],input[type=date]{background:var(--card2);border:1px solid var(--border);border-radius:10px;color:#fff;font-family:'Inter',sans-serif;font-size:.95rem;padding:10px 14px;transition:border-color .25s,box-shadow .25s,transform .2s;width:100%;-moz-appearance:textfield}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,160,23,.4);transform:scale(1.01)}
+
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.ali-formula{font-size:.75rem;color:var(--silver);margin-top:8px;letter-spacing:1px;min-height:18px;transition:all .3s}
+.ali-formula span{color:var(--gold-light);font-weight:600}
+
+/* ── BANDEIRA ROWS ── */
+.bandeira-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:10px;animation:slideRight .3s ease}
+@keyframes slideRight{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+.bandeira-row .field{flex:1}
+.add-btn,.del-btn{border:none;border-radius:8px;cursor:pointer;height:38px;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+.add-btn{background:rgba(212,160,23,.15);border:1px solid var(--border);color:var(--gold-light);padding:0 14px;gap:6px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:1px;transition:background .2s,transform .15s,box-shadow .2s}
+.add-btn:hover{background:rgba(212,160,23,.3);transform:scale(1.04);box-shadow:0 0 12px rgba(212,160,23,.3)}
+.add-btn:active{transform:scale(.97)}
+.del-btn{background:rgba(200,60,60,.12);border:1px solid rgba(200,60,60,.35);color:#e06060;width:36px;flex-shrink:0}
+.del-btn:hover{background:rgba(200,60,60,.3);transform:scale(1.1)}
+
+/* ── TOTALS ── */
+.totals-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.total-box{background:linear-gradient(135deg,rgba(212,160,23,.08),rgba(168,168,184,.05));border:1px solid var(--border);border-radius:12px;padding:14px 16px;transition:box-shadow .3s,transform .3s;position:relative;overflow:hidden}
+.total-box::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(212,160,23,.04));pointer-events:none}
+.total-box:hover{box-shadow:0 0 20px rgba(212,160,23,.25);transform:translateY(-2px) scale(1.01)}
+.total-box .t-label{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--silver);margin-bottom:4px}
+.total-box .t-value{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;color:var(--gold-light);transition:all .4s;display:inline-block}
+.total-box.big{grid-column:1/-1;background:linear-gradient(135deg,rgba(212,160,23,.18),rgba(240,192,64,.08));border-color:var(--gold-dark);animation:big-pulse 2s ease-in-out infinite}
+@keyframes big-pulse{0%,100%{box-shadow:0 0 0 rgba(212,160,23,0)}50%{box-shadow:0 0 25px rgba(212,160,23,.25)}}
+.total-box.big .t-value{font-size:2rem;color:#fff}
+.diff-ok{color:#5be08a!important;text-shadow:0 0 10px rgba(91,224,138,.5)}
+.diff-warn{color:#ff8c42!important;text-shadow:0 0 10px rgba(255,140,66,.5)}
+/* value pop animation */
+@keyframes value-pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.pop{animation:value-pop .3s ease}
+
+/* ── OCR ── */
+.ocr-source-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.ocr-source-btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:18px 12px;background:var(--card2);border:1px solid var(--border);border-radius:12px;color:var(--gold-light);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s;position:relative;overflow:hidden}
+.ocr-source-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,160,23,.1),transparent);opacity:0;transition:opacity .3s}
+.ocr-source-btn:hover::before{opacity:1}
+.ocr-source-btn span{font-size:1.5rem;animation:icon-bounce 2s ease-in-out infinite}
+@keyframes icon-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.ocr-source-btn:nth-child(2) span{animation-delay:.3s}
+.ocr-source-btn:hover{background:rgba(212,160,23,.08);border-color:var(--gold);box-shadow:0 0 16px rgba(212,160,23,.3);transform:translateY(-2px) scale(1.02)}
+.ocr-source-btn:active{transform:scale(.97)}
+
+#ocr-preview{width:100%;border-radius:10px;margin-bottom:12px;display:none;max-height:200px;object-fit:contain;border:1px solid var(--border);animation:fadeIn .4s ease;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+
+.ocr-btn{margin-top:4px;background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));background-size:200% 200%;border:none;border-radius:10px;color:#000;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:2px;padding:12px 22px;cursor:pointer;display:none;transition:.2s;box-shadow:0 4px 20px rgba(212,160,23,.45);width:100%;animation:gradient-shift 2s ease infinite}
+.ocr-btn:hover{filter:brightness(1.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,160,23,.6)}
+.ocr-btn:active{transform:scale(.97)}
+
+.ocr-spinner{display:none;margin-top:12px;text-align:center;font-size:.8rem;color:var(--gold-light);letter-spacing:1px}
+.ocr-spinner::before{content:'🔍 Lendo cupom... ' attr(data-progress);display:block;margin-bottom:8px;animation:flicker 1s linear infinite}
+.ocr-spinner::after{content:'';display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-right-color:var(--gold-light);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.ocr-result{margin-top:14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:.8rem;line-height:1.7;color:var(--silver-light);display:none;text-align:left;max-height:220px;overflow-y:auto;animation:fadeIn .4s ease}
+
+/* ── SEND BUTTON ── */
+.send-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:20px;background:linear-gradient(135deg,#25D366,#128C7E,#075E54);background-size:200% 200%;border:none;border-radius:16px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 6px 30px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;animation:pulse-green 2s ease-in-out infinite,gradient-shift 3s ease infinite;position:relative;overflow:hidden}
+.send-btn::before{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:rgba(255,255,255,.15);transform:skewX(-20deg);animation:btn-shine 3s linear infinite}
+@keyframes btn-shine{0%{left:-60%}100%{left:160%}}
+.send-btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 14px 45px rgba(37,211,102,.6);animation:none;background:linear-gradient(135deg,#2edb6e,#17a371)}
+.send-btn:active{transform:scale(.97)}
+.send-btn .wa-icon{font-size:1.8rem;animation:icon-bounce 1.5s ease-in-out infinite}
+@keyframes pulse-green{0%,100%{box-shadow:0 6px 30px rgba(37,211,102,.35)}50%{box-shadow:0 6px 50px rgba(37,211,102,.7)}}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:14px 0;position:relative}
+.divider::after{content:'◆';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--gold-dark);font-size:.5rem;background:var(--card);padding:0 6px;animation:rotate-gem 4s linear infinite}
+@keyframes rotate-gem{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ── CONFETTI ── */
+.confetti-piece{position:fixed;width:8px;height:14px;top:-20px;animation:confetti-fall linear forwards;pointer-events:none;z-index:999;border-radius:2px}
+@keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card2);border:1px solid var(--gold);border-radius:12px;padding:12px 24px;font-size:.85rem;color:var(--gold-light);transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:0;z-index:9999;white-space:nowrap;box-shadow:0 0 30px rgba(212,160,23,.4)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ── KEYFRAMES MISC ── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--dark)}::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold-dark),var(--gold));border-radius:3px}
+
+@media(max-width:480px){.pay-grid,.totals-grid,.meta-row{grid-template-columns:1fr}.total-box.big{grid-column:1}}
+</style>
+</head>
+<body>
+
+<!-- Canvas layers -->
+<canvas id="particles"></canvas>
+<canvas id="lightning-canvas"></canvas>
+
+<!-- Orbs -->
+<div class="orb" style="width:350px;height:350px;top:2%;left:-10%;animation-duration:14s;background:radial-gradient(circle,rgba(212,160,23,.12),transparent 70%)"></div>
+<div class="orb" style="width:250px;height:250px;top:45%;right:-8%;animation-duration:10s;animation-delay:-4s;background:radial-gradient(circle,rgba(168,168,184,.1),transparent 70%)"></div>
+<div class="orb" style="width:180px;height:180px;bottom:8%;left:15%;animation-duration:16s;animation-delay:-7s;background:radial-gradient(circle,rgba(212,160,23,.1),transparent 70%)"></div>
+<div class="orb" style="width:120px;height:120px;top:30%;left:5%;animation-duration:8s;animation-delay:-2s;background:radial-gradient(circle,rgba(240,192,64,.08),transparent 70%)"></div>
+
+<header>
+  <canvas id="matrix-canvas"></canvas>
+  <div class="logo-wrap">
+    <img class="logo-img" src="27927.png" alt="GNLC" onerror="this.style.display='none'">
+    <div class="brand-text">
+      <h1>GNLC GUARD</h1>
+      <p>— GUARD —</p>
+    </div>
+  </div>
+  <p class="subtitle">Sistema de Fechamento de Caixa · Subway</p>
+</header>
+
+<main>
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Identificação</div>
+    <div class="meta-row">
+      <div class="field"><label>Data</label><input type="date" id="data"></div>
+      <div class="field"><label>Operador(a)</label><input type="text" id="operador" placeholder="Seu nome"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📷</span> Leitura de Cupom (OCR)</div>
+    <input type="file" id="ocr-camera"  accept="image/*" capture="environment" onchange="handleOCRFile(event)" style="display:none">
+    <input type="file" id="ocr-gallery" accept="image/*" onchange="handleOCRFile(event)" style="display:none">
+    <div class="ocr-source-row">
+      <button class="ocr-source-btn" onclick="document.getElementById('ocr-camera').click()"><span>📷</span> Câmera</button>
+      <button class="ocr-source-btn" onclick="document.getElementById('ocr-gallery').click()"><span>🖼️</span> Galeria</button>
+    </div>
+    <img id="ocr-preview" alt="preview">
+    <button class="ocr-btn" id="ocr-btn" onclick="runOCR()">🔍 Analisar Cupom</button>
+    <div class="ocr-spinner" id="ocr-spinner"></div>
+    <div class="ocr-result" id="ocr-result"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>💳</span> Meios de Pagamento</div>
+    <div class="pay-grid">
+      <div class="field"><label>💵 Dinheiro</label><input type="number" id="dinheiro" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>
+      <div class="field"><label>📲 PIX</label><input type="number" id="pix" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="card-title" style="font-size:.8rem;margin-bottom:10px"><span>💳</span> Crédito</div>
+    <div id="credito-list"></div>
+    <button class="add-btn" onclick="addEntrada('credito')">+ Adicionar Crédito</button>
+    <div class="divider"></div>
+    <div class="card-title" style="font-size:.8rem;margin-bottom:10px"><span>🏦</span> Débito</div>
+    <div id="debito-list"></div>
+    <button class="add-btn" onclick="addEntrada('debito')">+ Adicionar Débito</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🍔</span> Alimentação (iFood / Voucher)</div>
+    <div class="field" style="margin-bottom:12px"><label>iFood Online</label><input type="number" id="ifood" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>
+    <div class="field" style="margin-bottom:12px"><label>iFood Voucher</label><input type="number" id="ifood-voucher" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>
+    <div class="field" style="margin-bottom:12px"><label>Voucher Funcionário</label><input type="number" id="voucher" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>
+    <div class="ali-formula" id="ali-formula"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🎯</span> Total da Venda (inserir manualmente)</div>
+    <div class="field"><label>Total Venda</label><input type="number" id="total-manual" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📊</span> Resultado do Fechamento</div>
+    <div class="totals-grid">
+      <div class="total-box"><div class="t-label">💵 Dinheiro</div><div class="t-value" id="r-dinheiro">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">📲 PIX</div><div class="t-value" id="r-pix">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">💳 Crédito Total</div><div class="t-value" id="r-credito">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">🏦 Débito Total</div><div class="t-value" id="r-debito">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">🛵 iFood</div><div class="t-value" id="r-ifood">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">🎟️ iFood Voucher</div><div class="t-value" id="r-ifood-v">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">🎟️ Voucher Func.</div><div class="t-value" id="r-voucher">R$ 0,00</div></div>
+      <div class="total-box"><div class="t-label">🍔 Alimentação</div><div class="t-value" id="r-ali">R$ 0,00</div></div>
+      <div class="total-box big"><div class="t-label">💰 TOTAL SISTEMA</div><div class="t-value" id="r-total">R$ 0,00</div></div>
+      <div class="total-box" style="grid-column:1/-1"><div class="t-label">📐 DIFERENÇA (Sistema vs Informado)</div><div class="t-value" id="r-diff">R$ 0,00</div></div>
+    </div>
+  </div>
+
+  <button class="send-btn" onclick="sendWhatsApp()">
+    <span class="wa-icon">📱</span> ENVIAR RELATÓRIO VIA WHATSAPP
+  </button>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+(function(){
+  var c=document.getElementById('particles'),ctx=c.getContext('2d'),W,H,pts=[];
+  function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  for(var i=0;i<100;i++) pts.push({x:Math.random()*9999,y:Math.random()*9999,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.3,a:Math.random(),gold:Math.random()>.5});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(function(p){
+      p.x=(p.x+p.vx+W)%W;p.y=(p.y+p.vy+H)%H;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.gold?'rgba(212,160,23,'+(p.a*.5)+')':'rgba(168,168,184,'+(p.a*.2)+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════════
+// LIGHTNING
+// ═══════════════════════════════════════════════
+(function(){
+  var c=document.getElementById('lightning-canvas'),ctx=c.getContext('2d');
+  function resize(){c.width=innerWidth;c.height=innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function bolt(x1,y1,x2,y2,branches){
+    ctx.beginPath();ctx.moveTo(x1,y1);
+    var mx=(x1+x2)/2+(Math.random()-.5)*80,my=(y1+y2)/2+(Math.random()-.5)*80;
+    ctx.quadraticCurveTo(mx,my,x2,y2);
+    ctx.strokeStyle='rgba(212,160,23,'+(Math.random()*.6+.1)+')';
+    ctx.lineWidth=Math.random()*1.5+.3;ctx.stroke();
+    if(branches>0&&Math.random()>.6){
+      bolt(mx,my,mx+(Math.random()-.5)*120,my+(Math.random()-.5)*120,branches-1);
+    }
+  }
+  function flash(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var n=Math.floor(Math.random()*2)+1;
+    for(var i=0;i<n;i++){
+      var x=Math.random()*c.width;
+      bolt(x,0,x+(Math.random()-.5)*200,c.height*.3+Math.random()*c.height*.4,3);
+    }
+    setTimeout(function(){ctx.clearRect(0,0,c.width,c.height);},120);
+    setTimeout(flash,Math.random()*5000+3000);
+  }
+  setTimeout(flash,2000);
+})();
+
+// ═══════════════════════════════════════════════
+// MATRIX RAIN (header)
+// ═══════════════════════════════════════════════
+(function(){
+  var c=document.getElementById('matrix-canvas'),ctx=c.getContext('2d');
+  var header=document.querySelector('header');
+  function resize(){c.width=header.offsetWidth;c.height=header.offsetHeight;}
+  resize();window.addEventListener('resize',resize);
+  var cols=Math.floor(c.width/14),drops=[];
+  for(var i=0;i<cols;i++) drops[i]=Math.random()*-50;
+  var chars='0123456789ABCDEF₿$R%#@!';
+  function draw(){
+    ctx.fillStyle='rgba(10,10,10,.07)';ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#D4A017';ctx.font='12px monospace';
+    for(var i=0;i<drops.length;i++){
+      var ch=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(ch,i*14,drops[i]*14);
+      if(drops[i]*14>c.height&&Math.random()>.97) drops[i]=0;
+      drops[i]+=.5;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════════
+var CONFETTI_COLORS=['#D4A017','#F0C040','#A8A8B8','#fff','#25D366','#ff8c42'];
+function launchConfetti(){
+  for(var i=0;i<80;i++){
+    (function(i){
+      setTimeout(function(){
+        var el=document.createElement('div');
+        el.className='confetti-piece';
+        el.style.left=Math.random()*100+'vw';
+        el.style.background=CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
+        el.style.animationDuration=(Math.random()*2+1.5)+'s';
+        el.style.animationDelay=(Math.random()*.5)+'s';
+        el.style.width=(Math.random()*8+4)+'px';
+        el.style.height=(Math.random()*14+6)+'px';
+        el.style.borderRadius=Math.random()>.5?'50%':'2px';
+        document.body.appendChild(el);
+        setTimeout(function(){el.remove();},3500);
+      },i*25);
+    })(i);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ANIMATED COUNTER
+// ═══════════════════════════════════════════════
+var currentVals={};
+function animateValue(id, newVal){
+  var el=document.getElementById(id);
+  if(!el) return;
+  var old=currentVals[id]||0;
+  if(Math.abs(old-newVal)<0.01){ el.textContent=fmt(newVal); return; }
+  currentVals[id]=newVal;
+  var start=null,dur=400;
+  function step(ts){
+    if(!start) start=ts;
+    var p=Math.min((ts-start)/dur,1);
+    var ease=1-Math.pow(1-p,3);
+    var cur=old+(newVal-old)*ease;
+    el.textContent=fmt(cur);
+    if(p<1){ requestAnimationFrame(step); }
+    else{ el.textContent=fmt(newVal); el.classList.add('pop'); setTimeout(function(){el.classList.remove('pop');},300); }
+  }
+  requestAnimationFrame(step);
+}
+
+// ═══════════════════════════════════════════════
+// ENTRADAS
+// ═══════════════════════════════════════════════
+var entradaCount={credito:0,debito:0};
+
+function addEntrada(tipo){
+  var list=document.getElementById(tipo+'-list');
+  var id=Date.now();
+  entradaCount[tipo]++;
+  var num=entradaCount[tipo];
+  var icon=tipo==='credito'?'💳':'🏦';
+  var nome=tipo==='credito'?'Crédito':'Débito';
+  var div=document.createElement('div');
+  div.className='bandeira-row';div.id='row-'+id;
+  div.innerHTML='<div class="field"><label>'+icon+' '+nome+' '+num+' – R$</label><input type="number" placeholder="0.00" step="0.01" min="0" oninput="calc()"></div>'
+    +'<button class="del-btn" onclick="removeEntrada(\''+id+'\',\''+tipo+'\')">✕</button>';
+  list.appendChild(div);
+  calc();
+}
+
+function removeEntrada(id,tipo){
+  var el=document.getElementById('row-'+id);
+  if(el){ el.style.animation='slideRight .2s ease reverse'; setTimeout(function(){el.remove();renumerar(tipo);calc();},180); }
+}
+function renumerar(tipo){
+  var list=document.getElementById(tipo+'-list');
+  var icon=tipo==='credito'?'💳':'🏦';
+  var nome=tipo==='credito'?'Crédito':'Débito';
+  list.querySelectorAll('.bandeira-row').forEach(function(row,i){
+    row.querySelector('label').textContent=icon+' '+nome+' '+(i+1)+' – R$';
+  });
+  entradaCount[tipo]=list.querySelectorAll('.bandeira-row').length;
+}
+
+function getTotais(tipo){
+  var list=document.getElementById(tipo+'-list'),total=0;
+  list.querySelectorAll('input[type=number]').forEach(function(inp){total+=parseFloat(inp.value)||0;});
+  return total;
+}
+
+// ═══════════════════════════════════════════════
+// CALC
+// ═══════════════════════════════════════════════
+function fmt(v){return 'R$ '+v.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+
+function calc(){
+  var din=parseFloat(document.getElementById('dinheiro').value)||0;
+  var pix=parseFloat(document.getElementById('pix').value)||0;
+  var ifood=parseFloat(document.getElementById('ifood').value)||0;
+  var ifoodV=parseFloat(document.getElementById('ifood-voucher').value)||0;
+  var voucher=parseFloat(document.getElementById('voucher').value)||0;
+  var manual=parseFloat(document.getElementById('total-manual').value)||0;
+  var cred=getTotais('credito');
+  var deb=getTotais('debito');
+  var ali=ifood+ifoodV+voucher;
+  var sys=din+pix+cred+deb+ali;
+  var diff=sys-manual;
+
+  animateValue('r-dinheiro',din);
+  animateValue('r-pix',pix);
+  animateValue('r-credito',cred);
+  animateValue('r-debito',deb);
+  animateValue('r-ifood',ifood);
+  animateValue('r-ifood-v',ifoodV);
+  animateValue('r-voucher',voucher);
+  animateValue('r-ali',ali);
+  animateValue('r-total',sys);
+
+  var rDiff=document.getElementById('r-diff');
+  animateValue('r-diff',Math.abs(diff));
+  setTimeout(function(){
+    rDiff.textContent=(diff>=0?'+':'-')+fmt(Math.abs(diff));
+    rDiff.className='t-value '+(Math.abs(diff)<0.05?'diff-ok':'diff-warn');
+  },420);
+
+  var parts=[];
+  if(ifood) parts.push(fmt(ifood));
+  if(ifoodV) parts.push(fmt(ifoodV));
+  if(voucher) parts.push(fmt(voucher));
+  document.getElementById('ali-formula').innerHTML=parts.length?parts.join(' + ')+' = <span>'+fmt(ali)+'</span>':'';
+}
+
+// ═══════════════════════════════════════════════
+// OCR
+// ═══════════════════════════════════════════════
+var ocrImageSrc=null;
+
+function handleOCRFile(e){
+  var file=e.target.files[0];if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    ocrImageSrc=ev.target.result;
+    var img=document.getElementById('ocr-preview');
+    img.src=ocrImageSrc;img.style.display='block';
+    document.getElementById('ocr-btn').style.display='block';
+    document.getElementById('ocr-result').style.display='none';
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function loadScript(src){
+  return new Promise(function(res,rej){var s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});
+}
+
+async function runOCR(){
+  if(!ocrImageSrc){showToast('Selecione uma imagem primeiro');return;}
+  var spinner=document.getElementById('ocr-spinner');
+  var btn=document.getElementById('ocr-btn');
+  var res=document.getElementById('ocr-result');
+  spinner.style.display='block';spinner.setAttribute('data-progress','0%');
+  btn.style.display='none';res.style.display='none';
+  try{
+    if(typeof Tesseract==='undefined') await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+    var result=await Tesseract.recognize(ocrImageSrc,'por',{
+      logger:function(m){if(m.status==='recognizing text') spinner.setAttribute('data-progress',Math.round(m.progress*100)+'%');}
+    });
+    parseAndApply(result.data.text);
+  }catch(err){
+    res.style.display='block';
+    res.innerHTML='<span style="color:#e06060">Erro ao ler imagem. Preencha manualmente.</span>';
+    console.error(err);
+  }
+  spinner.style.display='none';btn.style.display='block';
+}
+
+function parseAndApply(text){
+  var lines=text.split('\n');
+  var found={DINHEIRO:0,PIX:0,CREDITO:[],DEBITO:[],VOUCHER:0,IFOOD:0,IFOOD_VOUCHER:0};
+  function getVal(line){var m=line.match(/\d+[.,]\d{2}/g);if(!m)return null;return parseFloat(m[m.length-1].replace(',','.'));}
+
+  // Normaliza texto removendo acentos para facilitar match
+  function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+  // ── REGRAS DE CLASSIFICAÇÃO (ordem: mais específico primeiro) ──
+  // Cada regra: [array de palavras que DEVEM existir, categoria]
+  // Uma linha bate na regra se contiver QUALQUER palavra do array
+  var RULES = [
+    // iFood Voucher (antes de ifood geral)
+    [['ifood voucher','ifood vou'],                                       'IFOOD_VOUCHER'],
+    // iFood
+    [['ifood'],                                                            'IFOOD'],
+    // Voucher funcionário — ANTES de credito/debito pois "cartao voucher" tem "cartao"
+    [['voucher','alelo','ticket alimenta','sodexo','vale refeic'],         'VOUCHER'],
+    // PIX — "pix p.o.s", "tef pix fiserv", "pix fiserv", "pix"
+    [['pix'],                                                              'PIX'],
+    // CRÉDITO — linhas que contêm "cred" mas NÃO contêm "deb"
+    [['credito','crédito','cred'],                                         'CREDITO'],
+    // DÉBITO — inclui maestro, elo debito, visa debito, cartao debito...
+    [['debito','débito','deb','maestro'],                                  'DEBITO'],
+    // Dinheiro
+    [['dinheiro','dinhero'],                                               'DINHEIRO'],
+  ];
+
+  function hasAny(low, list){for(var k=0;k<list.length;k++){if(low.indexOf(list[k])>=0)return true;}return false;}
+
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i].trim();
+    var low=norm(line);
+    var val=getVal(line);
+    if(val===null) continue;
+
+    var matched=false;
+    for(var r=0;r<RULES.length;r++){
+      var keywords=RULES[r][0], cat=RULES[r][1];
+      if(!hasAny(low, keywords)) continue;
+
+      // Regra especial: se a linha tem "cred" E "deb" → é débito (ex: nunca acontece, mas por segurança)
+      if(cat==='CREDITO' && hasAny(low,['debito','débito','deb','maestro'])){
+        found.DEBITO.push(val);
+      } else if(cat==='CREDITO'){
+        found.CREDITO.push(val);
+      } else if(cat==='DEBITO'){
+        found.DEBITO.push(val);
+      } else if(cat==='DINHEIRO'){
+        found.DINHEIRO+=val;
+      } else if(cat==='PIX'){
+        found.PIX+=val;
+      } else if(cat==='VOUCHER'){
+        found.VOUCHER+=val;
+      } else if(cat==='IFOOD'){
+        found.IFOOD+=val;
+      } else if(cat==='IFOOD_VOUCHER'){
+        found.IFOOD_VOUCHER+=val;
+      }
+      matched=true;
+      break;
+    }
+  }
+  if(found.DINHEIRO) document.getElementById('dinheiro').value=found.DINHEIRO;
+  if(found.PIX)      document.getElementById('pix').value=found.PIX;
+  if(found.IFOOD)    document.getElementById('ifood').value=found.IFOOD;
+  if(found.IFOOD_VOUCHER) document.getElementById('ifood-voucher').value=found.IFOOD_VOUCHER;
+  if(found.VOUCHER)  document.getElementById('voucher').value=found.VOUCHER;
+  var cl=document.getElementById('credito-list');cl.innerHTML='';entradaCount.credito=0;
+  if(found.CREDITO.length>0) found.CREDITO.forEach(function(v){addEntrada('credito');var inp=cl.lastElementChild.querySelector('input');if(inp)inp.value=v;});
+  else addEntrada('credito');
+  var dl=document.getElementById('debito-list');dl.innerHTML='';entradaCount.debito=0;
+  if(found.DEBITO.length>0) found.DEBITO.forEach(function(v){addEntrada('debito');var inp=dl.lastElementChild.querySelector('input');if(inp)inp.value=v;});
+  else addEntrada('debito');
+  calc();
+  var total=found.DINHEIRO+found.PIX+found.VOUCHER+found.IFOOD+found.IFOOD_VOUCHER+found.CREDITO.reduce(function(a,b){return a+b;},0)+found.DEBITO.reduce(function(a,b){return a+b;},0);
+  var res=document.getElementById('ocr-result');res.style.display='block';
+  if(total>0){
+    res.innerHTML='<strong style="color:#5be08a">✅ Cupom lido com sucesso!</strong>'
+      +'<div style="margin-top:8px;font-size:.78rem;line-height:1.9;color:var(--silver-light)">'
+      +'💵 Dinheiro: <b>R$ '+found.DINHEIRO.toFixed(2)+'</b><br>'
+      +'📲 PIX: <b>R$ '+found.PIX.toFixed(2)+'</b><br>'
+      +'💳 Crédito(s): <b>'+(found.CREDITO.length?found.CREDITO.map(function(v){return 'R$ '+v.toFixed(2);}).join(' + '):'—')+'</b><br>'
+      +'🏦 Débito(s): <b>'+(found.DEBITO.length?found.DEBITO.map(function(v){return 'R$ '+v.toFixed(2);}).join(' + '):'—')+'</b><br>'
+      +'🎟️ Voucher: <b>R$ '+found.VOUCHER.toFixed(2)+'</b><br>'
+      +'🛵 iFood: <b>R$ '+found.IFOOD.toFixed(2)+'</b><br>'
+      +'🎟️ iFood Voucher: <b>R$ '+found.IFOOD_VOUCHER.toFixed(2)+'</b>'
+      +'</div><div style="margin-top:6px;font-size:.7rem;color:var(--gold-dark)">Confira os valores antes de enviar.</div>';
+    showToast('Cupom lido! Confira os valores ✅');
+  }else{
+    res.innerHTML='<span style="color:#e06060">Não reconheci os valores. Preencha manualmente.</span>'
+      +'<pre style="margin-top:8px;font-size:.65rem;white-space:pre-wrap;color:var(--silver);max-height:120px;overflow:auto">'+text.slice(0,500)+'</pre>';
+    showToast('Não reconhecido — preencha manualmente');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// WHATSAPP
+// ═══════════════════════════════════════════════
+function sendWhatsApp(){
+  var data=document.getElementById('data').value;
+  var op=document.getElementById('operador').value.trim()||'Não informado';
+  var din=parseFloat(document.getElementById('dinheiro').value)||0;
+  var pix=parseFloat(document.getElementById('pix').value)||0;
+  var ifood=parseFloat(document.getElementById('ifood').value)||0;
+  var ifoodV=parseFloat(document.getElementById('ifood-voucher').value)||0;
+  var voucher=parseFloat(document.getElementById('voucher').value)||0;
+  var manual=parseFloat(document.getElementById('total-manual').value)||0;
+  var cred=getTotais('credito'),deb=getTotais('debito');
+  var ali=ifood+ifoodV+voucher,sys=din+pix+cred+deb+ali;
+  var dataBR=data?new Date(data+'T12:00:00').toLocaleDateString('pt-BR'):'—';
+  function br(v){return v.toFixed(2).replace('.',',');}
+  var msg='*RELATÓRIO VENDA DIÁRIA SUBWAY - COHAJAP*\n'
+    +'🗓️: '+dataBR+'\n'
+    +'👩‍💻: '+op+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━\n'
+    +'DINHEIRO:              R$ '+br(din)+'\n'
+    +'DÉBITO:                   R$ '+br(deb)+'\n'
+    +'CRÉDITO:                R$ '+br(cred)+'\n'
+    +'PIX:                           R$ '+br(pix)+'\n'
+    +'IFOOD:                      R$ '+br(ifood)+'\n'
+    +'IFOOD VOUCHER: R$ '+br(ifoodV)+'\n'
+    +'VOUCHER FUNCIONÁRIO: R$ '+br(voucher)+'\n'
+    +'━━━━━━━━━━━━━━━━━━━━\n'
+    +'TOTAL VENDA: R$ '+br(manual)+'\n'
+    +'TOTAL SISTEMA: R$ '+br(sys);
+  launchConfetti();
+  showToast('Abrindo WhatsApp... 📱');
+  setTimeout(function(){window.open('https://wa.me/5598985684925?text='+encodeURIComponent(msg),'_blank');},600);
+}
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+function showToast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show');},3000);
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+window.onload=function(){
+  document.getElementById('data').value=new Date().toISOString().split('T')[0];
+  addEntrada('credito');
+  addEntrada('debito');
+  calc();
+};
+</script>
+</body>
+</html>
