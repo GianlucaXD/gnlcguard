@@ -27,15 +27,15 @@ body{background:var(--black);color:#e0e0f0;font-family:'Inter',sans-serif;min-he
 
 /* ── HEADER ── */
 header{position:relative;z-index:10;text-align:center;padding:36px 20px 24px;background:linear-gradient(180deg,rgba(212,160,23,0.12) 0%,transparent 100%);border-bottom:1px solid var(--border);overflow:hidden}
-header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:200%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),var(--gold-light),transparent);animation:scan-line 3s linear infinite}
-@keyframes scan-line{0%{left:-50%}100%{left:150%}}
+header::after{content:'';position:absolute;bottom:0;left:0;width:200%;height:1px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),var(--gold-light),transparent);animation:scan-line 3s linear infinite}
+@keyframes scan-line{0%{transform:translateX(-100%)}100%{transform:translateX(50%)}}
 
 .logo-wrap{display:flex;align-items:center;justify-content:center;gap:18px;animation:fadeDown .8s cubic-bezier(.34,1.56,.64,1)}
 .logo-img{width:88px;height:88px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(212,160,23,.8));animation:pulse-logo 2.5s ease-in-out infinite,spin-slow 20s linear infinite}
 @keyframes pulse-logo{0%,100%{filter:drop-shadow(0 0 16px rgba(212,160,23,.7))}50%{filter:drop-shadow(0 0 40px rgba(240,192,64,1)) drop-shadow(0 0 80px rgba(212,160,23,.4))}}
 @keyframes spin-slow{0%{transform:rotateY(0deg)}100%{transform:rotateY(360deg)}}
 
-.brand-text h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,5vw,2.4rem);font-weight:900;background:linear-gradient(135deg,var(--gold-light),var(--silver-light),var(--gold),var(--gold-light));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:3px;animation:gradient-shift 3s ease infinite,glitch 8s ease-in-out infinite}
+.brand-text h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.4rem,5vw,2.4rem);font-weight:900;background:linear-gradient(135deg,var(--gold-light),var(--silver-light),var(--gold),var(--gold-light));background-size:300% 300%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;letter-spacing:3px;animation:gradient-shift 3s ease infinite,glitch 8s ease-in-out infinite}
 @keyframes gradient-shift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 @keyframes glitch{0%,92%,100%{transform:none;filter:none}93%{transform:translateX(-3px);filter:hue-rotate(90deg)}94%{transform:translateX(3px);filter:hue-rotate(-90deg)}95%{transform:none;filter:none}96%{transform:translateX(2px) skewX(3deg)}97%{transform:none;filter:none}}
 
@@ -55,8 +55,8 @@ main{position:relative;z-index:5;max-width:700px;margin:0 auto;padding:28px 16px
 .card:hover{box-shadow:0 0 30px rgba(212,160,23,.35),0 8px 40px rgba(0,0,0,.6);border-color:rgba(212,160,23,.6);transform:translateY(-2px)}
 /* top shimmer */
 .card::before{content:'';position:absolute;top:0;left:-100%;right:-100%;height:2px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),var(--gold-light),transparent);animation:shimmer-line 2.5s linear infinite}
-@keyframes shimmer-line{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}
-/* corner spark */}.card::after{content:'';position:absolute;top:0;left:0;width:40px;height:40px;background:radial-gradient(circle at 0 0,rgba(212,160,23,.35),transparent 70%);animation:corner-pulse 3s ease-in-out infinite}
+@keyframes shimmer-line{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+/* corner spark */.card::after{content:'';position:absolute;top:0;left:0;width:40px;height:40px;background:radial-gradient(circle at 0 0,rgba(212,160,23,.35),transparent 70%);animation:corner-pulse 3s ease-in-out infinite}
 @keyframes corner-pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
 
 .card:nth-child(1){animation-delay:.05s}.card:nth-child(2){animation-delay:.12s}.card:nth-child(3){animation-delay:.19s}.card:nth-child(4){animation-delay:.26s}.card:nth-child(5){animation-delay:.33s}.card:nth-child(6){animation-delay:.40s}
@@ -132,7 +132,7 @@ input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,1
 /* ── SEND BUTTON ── */
 .send-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:20px;background:linear-gradient(135deg,#25D366,#128C7E,#075E54);background-size:200% 200%;border:none;border-radius:16px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 6px 30px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;animation:pulse-green 2s ease-in-out infinite,gradient-shift 3s ease infinite;position:relative;overflow:hidden}
 .send-btn::before{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:rgba(255,255,255,.15);transform:skewX(-20deg);animation:btn-shine 3s linear infinite}
-@keyframes btn-shine{0%{left:-60%}100%{left:160%}}
+@keyframes btn-shine{0%{transform:skewX(-20deg) translateX(0%)}100%{transform:skewX(-20deg) translateX(550%)}}
 .send-btn:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 14px 45px rgba(37,211,102,.6);animation:none;background:linear-gradient(135deg,#2edb6e,#17a371)}
 .send-btn:active{transform:scale(.97)}
 .send-btn .wa-icon{font-size:1.8rem;animation:icon-bounce 1.5s ease-in-out infinite}
@@ -142,6 +142,25 @@ input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,1
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:14px 0;position:relative}
 .divider::after{content:'◆';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--gold-dark);font-size:.5rem;background:var(--card);padding:0 6px;animation:rotate-gem 4s linear infinite}
 @keyframes rotate-gem{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ── OCR CONFIRM ── */
+#ocr-confirm{display:none;margin-top:14px;background:var(--card2);border:1px solid var(--gold-dark);border-radius:12px;padding:14px;animation:fadeIn .3s ease}
+.confirm-title{font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:2px;color:var(--gold-light);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.confirm-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;animation:slideRight .25s ease}
+.confirm-row label{font-size:.7rem;letter-spacing:1px;color:var(--silver);min-width:80px;flex-shrink:0}
+.confirm-row input{flex:1;background:#0f0f1a;border:1px solid var(--border);border-radius:8px;color:#fff;font-size:.9rem;padding:7px 10px;transition:border-color .2s,box-shadow .2s;-moz-appearance:textfield}
+.confirm-row input::-webkit-outer-spin-button,.confirm-row input::-webkit-inner-spin-button{-webkit-appearance:none}
+.confirm-row input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 10px rgba(212,160,23,.3)}
+.confirm-row .cat-badge{font-size:.75rem;padding:3px 8px;border-radius:6px;font-weight:700;flex-shrink:0}
+.badge-cred{background:rgba(212,160,23,.15);color:var(--gold-light);border:1px solid rgba(212,160,23,.3)}
+.badge-deb{background:rgba(100,160,255,.12);color:#90b8ff;border:1px solid rgba(100,160,255,.25)}
+.badge-pix{background:rgba(91,224,138,.12);color:#5be08a;border:1px solid rgba(91,224,138,.25)}
+.badge-vouch{background:rgba(255,180,80,.12);color:#ffb450;border:1px solid rgba(255,180,80,.25)}
+.confirm-row .rm-btn{background:rgba(200,60,60,.15);border:1px solid rgba(200,60,60,.3);border-radius:6px;color:#e06060;width:28px;height:28px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+.confirm-row .rm-btn:hover{background:rgba(200,60,60,.3)}
+.confirm-apply-btn{margin-top:12px;width:100%;padding:11px;background:linear-gradient(135deg,var(--gold-dark),var(--gold));border:none;border-radius:10px;color:#000;font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:.2s;box-shadow:0 4px 16px rgba(212,160,23,.35)}
+.confirm-apply-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.confirm-note{font-size:.68rem;color:var(--gold-dark);margin-top:8px;text-align:center;letter-spacing:.5px}
 
 /* ── CONFETTI ── */
 .confetti-piece{position:fixed;width:8px;height:14px;top:-20px;animation:confetti-fall linear forwards;pointer-events:none;z-index:999;border-radius:2px}
@@ -208,6 +227,7 @@ input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,1
     <button class="ocr-btn" id="ocr-btn" onclick="runOCR()">🔍 Analisar Cupom</button>
     <div class="ocr-spinner" id="ocr-spinner"></div>
     <div class="ocr-result" id="ocr-result"></div>
+    <div id="ocr-confirm"></div>
   </div>
 
   <div class="card">
@@ -251,7 +271,6 @@ input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,1
       <div class="total-box"><div class="t-label">🎟️ Voucher Func.</div><div class="t-value" id="r-voucher">R$ 0,00</div></div>
       <div class="total-box"><div class="t-label">🍔 Alimentação</div><div class="t-value" id="r-ali">R$ 0,00</div></div>
       <div class="total-box big"><div class="t-label">💰 TOTAL SISTEMA</div><div class="t-value" id="r-total">R$ 0,00</div></div>
-      <div class="total-box" style="grid-column:1/-1"><div class="t-label">📐 DIFERENÇA (Sistema vs Informado)</div><div class="t-value" id="r-diff">R$ 0,00</div></div>
     </div>
   </div>
 
@@ -271,7 +290,7 @@ input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,1
   var c=document.getElementById('particles'),ctx=c.getContext('2d'),W,H,pts=[];
   function resize(){W=c.width=innerWidth;H=c.height=innerHeight;}
   resize();window.addEventListener('resize',resize);
-  for(var i=0;i<100;i++) pts.push({x:Math.random()*9999,y:Math.random()*9999,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.3,a:Math.random(),gold:Math.random()>.5});
+  for(var i=0;i<100;i++) pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+.3,a:Math.random(),gold:Math.random()>.5});
   function draw(){
     ctx.clearRect(0,0,W,H);
     pts.forEach(function(p){
@@ -321,11 +340,15 @@ input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 16px rgba(212,1
 (function(){
   var c=document.getElementById('matrix-canvas'),ctx=c.getContext('2d');
   var header=document.querySelector('header');
-  function resize(){c.width=header.offsetWidth;c.height=header.offsetHeight;}
-  resize();window.addEventListener('resize',resize);
-  var cols=Math.floor(c.width/14),drops=[];
-  for(var i=0;i<cols;i++) drops[i]=Math.random()*-50;
+  var drops=[];
   var chars='0123456789ABCDEF₿$R%#@!';
+  function resize(){
+    c.width=header.offsetWidth;c.height=header.offsetHeight;
+    var cols=Math.floor(c.width/14);
+    drops=[];
+    for(var i=0;i<cols;i++) drops[i]=Math.random()*-50;
+  }
+  resize();window.addEventListener('resize',resize);
   function draw(){
     ctx.fillStyle='rgba(10,10,10,.07)';ctx.fillRect(0,0,c.width,c.height);
     ctx.fillStyle='#D4A017';ctx.font='12px monospace';
@@ -353,7 +376,6 @@ function launchConfetti(){
         el.style.left=Math.random()*100+'vw';
         el.style.background=CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)];
         el.style.animationDuration=(Math.random()*2+1.5)+'s';
-        el.style.animationDelay=(Math.random()*.5)+'s';
         el.style.width=(Math.random()*8+4)+'px';
         el.style.height=(Math.random()*14+6)+'px';
         el.style.borderRadius=Math.random()>.5?'50%':'2px';
@@ -372,8 +394,8 @@ function animateValue(id, newVal){
   var el=document.getElementById(id);
   if(!el) return;
   var old=currentVals[id]||0;
-  if(Math.abs(old-newVal)<0.01){ el.textContent=fmt(newVal); return; }
   currentVals[id]=newVal;
+  if(Math.abs(old-newVal)<0.01){ el.textContent=fmt(newVal); return; }
   var start=null,dur=400;
   function step(ts){
     if(!start) start=ts;
@@ -391,10 +413,11 @@ function animateValue(id, newVal){
 // ENTRADAS
 // ═══════════════════════════════════════════════
 var entradaCount={credito:0,debito:0};
+var _entradaUID=0;
 
 function addEntrada(tipo){
   var list=document.getElementById(tipo+'-list');
-  var id=Date.now();
+  var id=++_entradaUID;
   entradaCount[tipo]++;
   var num=entradaCount[tipo];
   var icon=tipo==='credito'?'💳':'🏦';
@@ -409,7 +432,7 @@ function addEntrada(tipo){
 
 function removeEntrada(id,tipo){
   var el=document.getElementById('row-'+id);
-  if(el){ el.style.animation='slideRight .2s ease reverse'; setTimeout(function(){el.remove();renumerar(tipo);calc();},180); }
+  if(el){ el.style.opacity='0'; el.style.transform='translateX(-20px)'; el.style.transition='opacity .18s ease,transform .18s ease'; setTimeout(function(){el.remove();renumerar(tipo);calc();},180); }
 }
 function renumerar(tipo){
   var list=document.getElementById(tipo+'-list');
@@ -438,12 +461,10 @@ function calc(){
   var ifood=parseFloat(document.getElementById('ifood').value)||0;
   var ifoodV=parseFloat(document.getElementById('ifood-voucher').value)||0;
   var voucher=parseFloat(document.getElementById('voucher').value)||0;
-  var manual=parseFloat(document.getElementById('total-manual').value)||0;
   var cred=getTotais('credito');
   var deb=getTotais('debito');
   var ali=ifood+ifoodV+voucher;
   var sys=din+pix+cred+deb+ali;
-  var diff=sys-manual;
 
   animateValue('r-dinheiro',din);
   animateValue('r-pix',pix);
@@ -455,12 +476,6 @@ function calc(){
   animateValue('r-ali',ali);
   animateValue('r-total',sys);
 
-  var rDiff=document.getElementById('r-diff');
-  animateValue('r-diff',Math.abs(diff));
-  setTimeout(function(){
-    rDiff.textContent=(diff>=0?'+':'-')+fmt(Math.abs(diff));
-    rDiff.className='t-value '+(Math.abs(diff)<0.05?'diff-ok':'diff-warn');
-  },420);
 
   var parts=[];
   if(ifood) parts.push(fmt(ifood));
@@ -483,6 +498,7 @@ function handleOCRFile(e){
     img.src=ocrImageSrc;img.style.display='block';
     document.getElementById('ocr-btn').style.display='block';
     document.getElementById('ocr-result').style.display='none';
+    document.getElementById('ocr-confirm').style.display='none';
   };
   reader.readAsDataURL(file);
   e.target.value='';
@@ -499,6 +515,7 @@ async function runOCR(){
   var res=document.getElementById('ocr-result');
   spinner.style.display='block';spinner.setAttribute('data-progress','0%');
   btn.style.display='none';res.style.display='none';
+  document.getElementById('ocr-confirm').style.display='none';
   try{
     if(typeof Tesseract==='undefined') await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
     var result=await Tesseract.recognize(ocrImageSrc,'por',{
@@ -509,104 +526,149 @@ async function runOCR(){
     res.style.display='block';
     res.innerHTML='<span style="color:#e06060">Erro ao ler imagem. Preencha manualmente.</span>';
     console.error(err);
+  }finally{
+    spinner.style.display='none';btn.style.display='block';
   }
-  spinner.style.display='none';btn.style.display='block';
 }
 
+// ── itens OCR pendentes de confirmação ──
+var ocrPending = [];
+
 function parseAndApply(text){
-  var lines=text.split('\n');
-  var found={DINHEIRO:0,PIX:0,CREDITO:[],DEBITO:[],VOUCHER:0,IFOOD:0,IFOOD_VOUCHER:0};
-  function getVal(line){var m=line.match(/\d+[.,]\d{2}/g);if(!m)return null;return parseFloat(m[m.length-1].replace(',','.'));}
-
-  // Normaliza texto removendo acentos para facilitar match
   function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+  function getVal(line){
+    var m=line.match(/\d+[.,]\d{2}/g);
+    if(!m) return null;
+    var v=parseFloat(m[m.length-1].replace(',','.'));
+    return isNaN(v)?null:v;
+  }
+  function has(low,kw){return low.indexOf(kw)>=0;}
+  function hasAny(low,list){for(var k=0;k<list.length;k++){if(has(low,list[k]))return true;}return false;}
 
-  // ── REGRAS DE CLASSIFICAÇÃO (ordem: mais específico primeiro) ──
-  // Cada regra: [array de palavras que DEVEM existir, categoria]
-  // Uma linha bate na regra se contiver QUALQUER palavra do array
-  var RULES = [
-    // iFood Voucher (antes de ifood geral)
-    [['ifood voucher','ifood vou'],                                       'IFOOD_VOUCHER'],
-    // iFood
-    [['ifood'],                                                            'IFOOD'],
-    // Voucher funcionário — ANTES de credito/debito pois "cartao voucher" tem "cartao"
-    [['voucher','alelo','ticket alimenta','sodexo','vale refeic'],         'VOUCHER'],
-    // PIX — "pix p.o.s", "tef pix fiserv", "pix fiserv", "pix"
-    [['pix'],                                                              'PIX'],
-    // CRÉDITO — linhas que contêm "cred" mas NÃO contêm "deb"
-    [['credito','crédito','cred'],                                         'CREDITO'],
-    // DÉBITO — inclui maestro, elo debito, visa debito, cartao debito...
-    [['debito','débito','deb','maestro'],                                  'DEBITO'],
-    // Dinheiro
-    [['dinheiro','dinhero'],                                               'DINHEIRO'],
-  ];
+  ocrPending = [];
+  var pixTotal = 0;
 
-  function hasAny(low, list){for(var k=0;k<list.length;k++){if(low.indexOf(list[k])>=0)return true;}return false;}
+  function cleanText(s){
+    // remove pontos entre letras: P.O.S→POS, TEF→TEF
+    return norm(s).replace(/([a-zA-Z])\.([a-zA-Z0-9])/g,'$1$2').replace(/\s+/g,' ').trim();
+  }
 
-  for(var i=0;i<lines.length;i++){
-    var line=lines[i].trim();
-    var low=norm(line);
-    var val=getVal(line);
-    if(val===null) continue;
+  function classify(c){
+    // Voucher PRIMEIRO (cartao voucher tem "cartao" mas é voucher)
+    if(hasAny(c,['voucher','alelo','sodexo','vale refeic'])) return 'VOUCHER';
+    if(has(c,'pix')) return 'PIX';
+    // Crédito: tem cred mas NÃO tem deb/maestro
+    if(hasAny(c,['credito','cred']) && !hasAny(c,['debito','deb','maestro'])) return 'CREDITO';
+    if(hasAny(c,['debito','deb','maestro'])) return 'DEBITO';
+    return null;
+  }
 
-    var matched=false;
-    for(var r=0;r<RULES.length;r++){
-      var keywords=RULES[r][0], cat=RULES[r][1];
-      if(!hasAny(low, keywords)) continue;
+  // Lê linha por linha. Quando uma linha tem keyword mas não tem valor,
+  // guarda a categoria e aplica ao valor da próxima linha numérica.
+  var rawLines = text.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  var pendingCat = null; // categoria da linha anterior sem valor
 
-      // Regra especial: se a linha tem "cred" E "deb" → é débito (ex: nunca acontece, mas por segurança)
-      if(cat==='CREDITO' && hasAny(low,['debito','débito','deb','maestro'])){
-        found.DEBITO.push(val);
-      } else if(cat==='CREDITO'){
-        found.CREDITO.push(val);
-      } else if(cat==='DEBITO'){
-        found.DEBITO.push(val);
-      } else if(cat==='DINHEIRO'){
-        found.DINHEIRO+=val;
-      } else if(cat==='PIX'){
-        found.PIX+=val;
-      } else if(cat==='VOUCHER'){
-        found.VOUCHER+=val;
-      } else if(cat==='IFOOD'){
-        found.IFOOD+=val;
-      } else if(cat==='IFOOD_VOUCHER'){
-        found.IFOOD_VOUCHER+=val;
-      }
-      matched=true;
-      break;
+  for(var i=0;i<rawLines.length;i++){
+    var line = rawLines[i];
+    var clean = cleanText(line);
+    var val = getVal(line);
+    var cat = classify(clean);
+
+    if(cat && val!==null && val>0){
+      // Linha completa: tem keyword E valor — caso mais comum
+      pendingCat = null;
+      if(cat==='PIX') pixTotal+=val;
+      else if(cat==='VOUCHER') ocrPending.push({cat:'VOUCHER',label:'🎟️ Voucher',badge:'badge-vouch',val:val,line:line});
+      else if(cat==='CREDITO') ocrPending.push({cat:'CREDITO',label:'💳 Crédito',badge:'badge-cred',val:val,line:line});
+      else if(cat==='DEBITO')  ocrPending.push({cat:'DEBITO', label:'🏦 Débito', badge:'badge-deb', val:val,line:line});
+
+    } else if(cat && (val===null||val===0)){
+      // Linha tem keyword mas não tem valor → OCR quebrou a linha
+      // guarda categoria para aplicar ao próximo valor encontrado
+      pendingCat = cat;
+
+    } else if(!cat && val!==null && val>0 && pendingCat){
+      // Linha só tem valor, sem keyword → usa categoria pendente da linha anterior
+      var c2 = pendingCat; pendingCat = null;
+      if(c2==='PIX') pixTotal+=val;
+      else if(c2==='VOUCHER') ocrPending.push({cat:'VOUCHER',label:'🎟️ Voucher',badge:'badge-vouch',val:val,line:rawLines[i-1]+' '+val});
+      else if(c2==='CREDITO') ocrPending.push({cat:'CREDITO',label:'💳 Crédito',badge:'badge-cred',val:val,line:rawLines[i-1]+' '+val});
+      else if(c2==='DEBITO')  ocrPending.push({cat:'DEBITO', label:'🏦 Débito', badge:'badge-deb', val:val,line:rawLines[i-1]+' '+val});
+    } else {
+      // Linha sem keyword e sem pendente — ignora
+      if(cat===null) pendingCat = null;
     }
   }
-  if(found.DINHEIRO) document.getElementById('dinheiro').value=found.DINHEIRO;
-  if(found.PIX)      document.getElementById('pix').value=found.PIX;
-  if(found.IFOOD)    document.getElementById('ifood').value=found.IFOOD;
-  if(found.IFOOD_VOUCHER) document.getElementById('ifood-voucher').value=found.IFOOD_VOUCHER;
-  if(found.VOUCHER)  document.getElementById('voucher').value=found.VOUCHER;
-  var cl=document.getElementById('credito-list');cl.innerHTML='';entradaCount.credito=0;
-  if(found.CREDITO.length>0) found.CREDITO.forEach(function(v){addEntrada('credito');var inp=cl.lastElementChild.querySelector('input');if(inp)inp.value=v;});
-  else addEntrada('credito');
-  var dl=document.getElementById('debito-list');dl.innerHTML='';entradaCount.debito=0;
-  if(found.DEBITO.length>0) found.DEBITO.forEach(function(v){addEntrada('debito');var inp=dl.lastElementChild.querySelector('input');if(inp)inp.value=v;});
-  else addEntrada('debito');
-  calc();
-  var total=found.DINHEIRO+found.PIX+found.VOUCHER+found.IFOOD+found.IFOOD_VOUCHER+found.CREDITO.reduce(function(a,b){return a+b;},0)+found.DEBITO.reduce(function(a,b){return a+b;},0);
-  var res=document.getElementById('ocr-result');res.style.display='block';
-  if(total>0){
-    res.innerHTML='<strong style="color:#5be08a">✅ Cupom lido com sucesso!</strong>'
-      +'<div style="margin-top:8px;font-size:.78rem;line-height:1.9;color:var(--silver-light)">'
-      +'💵 Dinheiro: <b>R$ '+found.DINHEIRO.toFixed(2)+'</b><br>'
-      +'📲 PIX: <b>R$ '+found.PIX.toFixed(2)+'</b><br>'
-      +'💳 Crédito(s): <b>'+(found.CREDITO.length?found.CREDITO.map(function(v){return 'R$ '+v.toFixed(2);}).join(' + '):'—')+'</b><br>'
-      +'🏦 Débito(s): <b>'+(found.DEBITO.length?found.DEBITO.map(function(v){return 'R$ '+v.toFixed(2);}).join(' + '):'—')+'</b><br>'
-      +'🎟️ Voucher: <b>R$ '+found.VOUCHER.toFixed(2)+'</b><br>'
-      +'🛵 iFood: <b>R$ '+found.IFOOD.toFixed(2)+'</b><br>'
-      +'🎟️ iFood Voucher: <b>R$ '+found.IFOOD_VOUCHER.toFixed(2)+'</b>'
-      +'</div><div style="margin-top:6px;font-size:.7rem;color:var(--gold-dark)">Confira os valores antes de enviar.</div>';
-    showToast('Cupom lido! Confira os valores ✅');
-  }else{
-    res.innerHTML='<span style="color:#e06060">Não reconheci os valores. Preencha manualmente.</span>'
+
+  // Adiciona PIX somado como item único
+  if(pixTotal>0) ocrPending.unshift({cat:'PIX',label:'📲 PIX',badge:'badge-pix',val:pixTotal,line:'(soma dos PIX)'});
+
+  var res=document.getElementById('ocr-result');
+  var confirmEl=document.getElementById('ocr-confirm');
+
+  if(ocrPending.length===0){
+    res.style.display='block'; confirmEl.style.display='none';
+    res.innerHTML='<span style="color:#e06060">⚠️ Não reconheci valores. Preencha manualmente.</span>'
       +'<pre style="margin-top:8px;font-size:.65rem;white-space:pre-wrap;color:var(--silver);max-height:120px;overflow:auto">'+text.slice(0,500)+'</pre>';
     showToast('Não reconhecido — preencha manualmente');
+    return;
   }
+
+  // Mostra tela de confirmação com campos editáveis
+  res.style.display='none';
+  confirmEl.style.display='block';
+  renderConfirm();
+  showToast('Confira os valores antes de confirmar ✍️');
+}
+
+function renderConfirm(){
+  var confirmEl=document.getElementById('ocr-confirm');
+  var html='<div class="confirm-title">✍️ CONFIRME OS VALORES LIDOS</div>';
+  ocrPending.forEach(function(item,idx){
+    html+='<div class="confirm-row" id="crow-'+idx+'">'
+      +'<span class="cat-badge '+item.badge+'">'+item.label+'</span>'
+      +'<input type="number" step="0.01" min="0" value="'+item.val.toFixed(2)+'" onchange="ocrPending['+idx+'].val=parseFloat(this.value)||0" title="'+item.line+'">'
+      +'<button class="rm-btn" onclick="removeConfirmRow('+idx+')">✕</button>'
+      +'</div>';
+  });
+  html+='<button class="confirm-apply-btn" onclick="applyConfirmed()">✅ CONFIRMAR E APLICAR</button>';
+  html+='<p class="confirm-note">💡 Corrija os valores errados, remova duplicatas e confirme.<br>Dinheiro e iFood: preencha manualmente abaixo.</p>';
+  confirmEl.innerHTML=html;
+}
+
+function removeConfirmRow(idx){
+  ocrPending.splice(idx,1);
+  renderConfirm();
+}
+
+function applyConfirmed(){
+  // Reseta listas
+  var cl=document.getElementById('credito-list'); cl.innerHTML=''; entradaCount.credito=0;
+  var dl=document.getElementById('debito-list');  dl.innerHTML=''; entradaCount.debito=0;
+
+  ocrPending.forEach(function(item){
+    if(item.val<=0) return;
+    if(item.cat==='PIX'){
+      document.getElementById('pix').value=item.val.toFixed(2);
+    } else if(item.cat==='VOUCHER'){
+      var cur=parseFloat(document.getElementById('voucher').value)||0;
+      document.getElementById('voucher').value=(cur+item.val).toFixed(2);
+    } else if(item.cat==='CREDITO'){
+      addEntrada('credito');
+      var inpCred=cl.lastElementChild.querySelector('input'); if(inpCred) inpCred.value=item.val.toFixed(2);
+    } else if(item.cat==='DEBITO'){
+      addEntrada('debito');
+      var inpDeb=dl.lastElementChild.querySelector('input'); if(inpDeb) inpDeb.value=item.val.toFixed(2);
+    }
+  });
+
+  if(!cl.children.length) addEntrada('credito');
+  if(!dl.children.length) addEntrada('debito');
+
+  calc();
+  ocrPending=[];
+  document.getElementById('ocr-confirm').style.display='none';
+  showToast('Valores aplicados! ✅');
 }
 
 // ═══════════════════════════════════════════════
@@ -622,7 +684,7 @@ function sendWhatsApp(){
   var voucher=parseFloat(document.getElementById('voucher').value)||0;
   var manual=parseFloat(document.getElementById('total-manual').value)||0;
   var cred=getTotais('credito'),deb=getTotais('debito');
-  var ali=ifood+ifoodV+voucher,sys=din+pix+cred+deb+ali;
+  var ali=ifood+ifoodV+voucher;
   var dataBR=data?new Date(data+'T12:00:00').toLocaleDateString('pt-BR'):'—';
   function br(v){return v.toFixed(2).replace('.',',');}
   var msg='*RELATÓRIO VENDA DIÁRIA SUBWAY - COHAJAP*\n'
@@ -637,8 +699,7 @@ function sendWhatsApp(){
     +'IFOOD VOUCHER: R$ '+br(ifoodV)+'\n'
     +'VOUCHER FUNCIONÁRIO: R$ '+br(voucher)+'\n'
     +'━━━━━━━━━━━━━━━━━━━━\n'
-    +'TOTAL VENDA: R$ '+br(manual)+'\n'
-    +'TOTAL SISTEMA: R$ '+br(sys);
+    +'TOTAL VENDA: R$ '+br(manual);
   launchConfetti();
   showToast('Abrindo WhatsApp... 📱');
   setTimeout(function(){window.open('https://wa.me/5598985684925?text='+encodeURIComponent(msg),'_blank');},600);
@@ -647,10 +708,12 @@ function sendWhatsApp(){
 // ═══════════════════════════════════════════════
 // TOAST
 // ═══════════════════════════════════════════════
+var _toastTimer=null;
 function showToast(msg){
   var el=document.getElementById('toast');
   el.textContent=msg;el.classList.add('show');
-  setTimeout(function(){el.classList.remove('show');},3000);
+  if(_toastTimer) clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(function(){el.classList.remove('show');_toastTimer=null;},3000);
 }
 
 // ═══════════════════════════════════════════════
